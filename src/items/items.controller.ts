@@ -28,29 +28,34 @@ export class ItemsController {
   // }
 
   @Get()
-  async findAll(): Promise<Item[]> {
+  findAll(): Promise<Item[]> {
     return this.itemsService.findAll();
   }
 
   @Get(':id')
-  async findOne(@Param() param): Promise<Item> {
+  findOne(@Param() param): Promise<Item> {
     return this.itemsService.findOne(param.id);
   }
 
   @Post()
-  create(@Body() body: CreateItemDto): Promise<Item> {
-    return this.itemsService.create(body);
+  create(@Body() createItemDto: CreateItemDto): Promise<Item> {
+    return this.itemsService.create(createItemDto);
   }
 
   // delete the id also anthor way of pasing the param
   @Delete(':id')
-  delete(@Param('id') id): string {
-    return `Delete ${id}`;
+  delete(@Param('id') id): Promise<Item> {
+    return this.itemsService.delete(id);
   }
 
-  // update a item
+  // update a  hard coded item
+  // @Put(':id')
+  // update(@Body() updateBody: CreateItemDto, @Param('id') id): string {
+  //   return `Update ${id} - Name: ${updateBody.name}`;
+  // }
+
   @Put(':id')
-  update(@Body() updateBody: CreateItemDto, @Param('id') id): string {
-    return `Update ${id} - Name: ${updateBody.name}`;
+  update(@Body() updateItemDto: CreateItemDto, @Param('id') id): Promise<Item> {
+    return this.itemsService.update(id, updateItemDto);
   }
 }
