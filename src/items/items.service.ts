@@ -39,7 +39,8 @@ export class ItemsService {
 
   async create(item: Item): Promise<Item> {
     const newItem = new this.itemModel(item);
-    return await newItem.save();
+    const res: any = await newItem.save();
+    return res;
   }
 
   async delete(id: string): Promise<Item> {
