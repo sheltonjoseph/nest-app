@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Item } from './interfaces/item.interface';
-import { Model } from 'mongoose';
+import { Injectable, Inject } from '@nestjs/common';
+
+import { Item } from './items.entity';
 // similar to dto
 @Injectable()
 export class ItemsService {
-  constructor(@InjectModel('Item') private readonly itemModel: Model<Item>) {}
+  constructor(
+    @Inject('ITEMS_REPOSITORY') private ItemsRepository: typeof Item,
+  ) {}
   // HARDCODEDED DATA FOR REFERENCE
   //   private readonly items: Item[] = [
   //     {
@@ -30,23 +31,23 @@ export class ItemsService {
   //   }
 
   async findAll(): Promise<Item[]> {
-    return await this.itemModel.find();
+    return await this.ItemsRepository.find();
   }
 
   async findOne(id: string): Promise<Item> {
-    return await this.itemModel.findOne({ _id: id });
+    return await this.ItemsRepository.findOne({ _id: id });
   }
 
   async create(item: Item): Promise<Item> {
-    const newItem = new this.itemModel(item);
+    const newItem = new this.ItemsRepository(item);
     const res: any = await newItem.save();
     return res;
   }
 
   async delete(id: string): Promise<Item> {
-    return await this.itemModel.findByIdAndRemove(id);
+    return await this.ItemsRepository.findByIdAndRemove(id);
   }
   async update(id: string, item: Item): Promise<Item> {
-    return await this.itemModel.findByIdAndUpdate(id, item, { new: true });
+    return await this.ItemsRepository.findByIdAndUpdate(id, item, { new: true });
   }
 }
