@@ -8,10 +8,10 @@ export const databaseProviders = [
       const sequelize = new Sequelize({
         dialect: 'postgres',
         host: 'localhost',
-        port: 3306,
-        username: 'root',
-        password: 'password',
-        database: 'nest',
+        port: 7000,
+        username: 'postgres',
+        password: 'Eagle2022',
+        database: 'taskify',
       });
       sequelize.addModels([Item]);
       await sequelize.sync();

@@ -1,5 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
-
+import { ApiParam } from '@nestjs/swagger';
+import { CreateItemDto } from './dto/create-item.dto';
 import { Item } from './items.entity';
 // similar to dto
 @Injectable()
@@ -31,23 +32,23 @@ export class ItemsService {
   //   }
 
   async findAll(): Promise<Item[]> {
-    return await this.ItemsRepository.find();
+    return await this.ItemsRepository.findAll<Item>();
+  }
+  @ApiParam({ name: 'id', required: true })
+  async findOne(id: any): Promise<Item> {
+    return await this.ItemsRepository.findOne((id = id));
   }
 
-  async findOne(id: string): Promise<Item> {
-    return await this.ItemsRepository.findOne({ _id: id });
-  }
-
-  async create(item: Item): Promise<Item> {
+  async create(item: CreateItemDto): Promise<Item> {
     const newItem = new this.ItemsRepository(item);
     const res: any = await newItem.save();
     return res;
   }
 
-  async delete(id: string): Promise<Item> {
-    return await this.ItemsRepository.findByIdAndRemove(id);
-  }
-  async update(id: string, item: Item): Promise<Item> {
-    return await this.ItemsRepository.findByIdAndUpdate(id, item, { new: true });
-  }
+  // async delete(id: string): Promise<Item> {
+  //   return await this.ItemsRepository.findByIdAndRemove(id);
+  // }
+  // async update(id: string, item: Item): Promise<Item> {
+  //   return await this.ItemsRepository.findByIdAndUpdate(id, item, { new: true });
+  // }
 }

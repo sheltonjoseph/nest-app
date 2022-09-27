@@ -1,9 +1,18 @@
-import { Table, Column, Model } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  AutoIncrement,
+  PrimaryKey,
+  DataType,
+} from 'sequelize-typescript';
 
 @Table
 export class Item extends Model {
-  @Column
-  todo_id: number;
+  //   @AutoIncrement
+  //   @PrimaryKey
+  //   @Column(DataType.BIGINT)
+  //   todo_id: number;
 
   @Column
   description: string;
