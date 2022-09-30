@@ -1,52 +1,35 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Item } from './interfaces/item.interface';
-import { Model } from 'mongoose';
+import { Injectable, Inject } from '@nestjs/common';
+import { CreateItemDto } from './dto/create-item.dto';
+import { Item } from './items.entity';
 // similar to dto
 @Injectable()
 export class ItemsService {
-  constructor(@InjectModel('Item') private readonly itemModel: Model<Item>) {}
-  // HARDCODEDED DATA FOR REFERENCE
-  //   private readonly items: Item[] = [
-  //     {
-  //       id: '23423423423',
-  //       name: 'item one',
-  //       qty: 100,
-  //       description: 'THIS IS ITEM ONE',
-  //     },
-  //     {
-  //       id: '22342314',
-  //       name: 'item two',
-  //       qty: 50,
-  //       description: 'THIS IS ITEM two',
-  //     },
-  //   ];
-
-  //   async findAll(): Item[] {
-  //     return this.items; // you can acces the items inside the class using this keyword since it is a class
-  //   }
-  //   findOne(id: string): Item {
-  //     return this.items.find((item) => item.id === id);
-  //   }
+  constructor(
+    @Inject('ITEMS_REPOSITORY') private ItemsRepository: typeof Item,
+  ) {}
 
   async findAll(): Promise<Item[]> {
-    return await this.itemModel.find();
+    return await this.ItemsRepository.findAll<Item>({
+      order: [['createdAt', 'DESC']],
+    });
   }
 
-  async findOne(id: string): Promise<Item> {
-    return await this.itemModel.findOne({ _id: id });
+  async findOne(id: number): Promise<Item> {
+    return await this.ItemsRepository.findOne({ where: { id } });
   }
 
-  async create(item: Item): Promise<Item> {
-    const newItem = new this.itemModel(item);
-    const res: any = await newItem.save();
+  async create(item: CreateItemDto): Promise<Item> {
+    // const newItem = new this.ItemsRepository(item);
+    return await this.ItemsRepository.save(item);
+  }
+
+  async delete(id: number): Promise<any> {
+    const res = await this.ItemsRepository.destroy({ where: { id } });
     return res;
   }
-
-  async delete(id: string): Promise<Item> {
-    return await this.itemModel.findByIdAndRemove(id);
-  }
-  async update(id: string, item: Item): Promise<Item> {
-    return await this.itemModel.findByIdAndUpdate(id, item, { new: true });
+  async update(id: number, item: CreateItemDto): Promise<any> {
+    // return
+    const result = await this.ItemsRepository.update(item, { where: { id } });
+    return result;
   }
 }

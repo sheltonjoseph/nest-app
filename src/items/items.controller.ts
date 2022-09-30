@@ -9,23 +9,13 @@ import {
 } from '@nestjs/common';
 import { CreateItemDto } from './dto/create-item.dto';
 import { ItemsService } from './items.service';
-import { Item } from './interfaces/item.interface';
+import { Item } from './items.entity';
+import { ApiParam } from '@nestjs/swagger';
 
 // get all items
 @Controller('items')
 export class ItemsController {
   constructor(private readonly itemsService: ItemsService) {}
-
-  // FOR Receiving hardcoded data
-  // @Get()
-  // findAll(): Item[] {
-  //   return this.itemsService.findAll();
-  // }
-
-  // @Get(':id')
-  // findOne(@Param() param): Item {
-  //   return this.itemsService.findOne(param.id);
-  // }
 
   @Get()
   findAll(): Promise<Item[]> {
@@ -33,8 +23,9 @@ export class ItemsController {
   }
 
   @Get(':id')
-  findOne(@Param() param): Promise<Item> {
-    return this.itemsService.findOne(param.id);
+  @ApiParam({ name: 'id', required: true })
+  findOne(@Param('id') id): Promise<Item> {
+    return this.itemsService.findOne(id);
   }
 
   @Post()
@@ -44,17 +35,13 @@ export class ItemsController {
 
   // delete the id also anthor way of pasing the param
   @Delete(':id')
+  @ApiParam({ name: 'id', required: true })
   delete(@Param('id') id): Promise<Item> {
     return this.itemsService.delete(id);
   }
 
-  // update a  hard coded item
-  // @Put(':id')
-  // update(@Body() updateBody: CreateItemDto, @Param('id') id): string {
-  //   return `Update ${id} - Name: ${updateBody.name}`;
-  // }
-
   @Put(':id')
+  @ApiParam({ name: 'id', required: true })
   update(@Body() updateItemDto: CreateItemDto, @Param('id') id): Promise<Item> {
     return this.itemsService.update(id, updateItemDto);
   }
